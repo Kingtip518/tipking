@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TipKing — Expert Football Tips</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2236;--bg-card-hover:#1f2a42;--accent-gold:#f59e0b;--accent-gold-dim:#b45309;--accent-green:#10b981;--accent-red:#ef4444;--accent-blue:#3b82f6;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--border:#1e293b;--border-accent:#334155;--gradient-gold:linear-gradient(135deg,#f59e0b,#d97706,#b45309);--gradient-premium:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#f59e0b 100%);--shadow-glow:0 0 30px rgba(245,158,11,0.15);--shadow-card:0 4px 24px rgba(0,0,0,0.4)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Source Sans 3',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-primary)}::-webkit-scrollbar-thumb{background:var(--accent-gold-dim);border-radius:3px}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 5px rgba(245,158,11,0.3)}50%{box-shadow:0 0 20px rgba(245,158,11,0.6)}}
+@keyframes live-dot{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+header{position:fixed;top:0;left:0;right:0;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:1000;padding:0 24px}
+.header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-icon{width:42px;height:42px;background:var(--gradient-gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--bg-primary);font-family:'Oswald',sans-serif;box-shadow:0 2px 12px rgba(245,158,11,0.3)}
+.logo-text{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px}
+.logo-sub{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin-top:-4px}
+nav{display:flex;gap:4px;align-items:center}
+nav a{color:var(--text-secondary);text-decoration:none;padding:8px 13px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;cursor:pointer;white-space:nowrap}
+nav a:hover,nav a.active{color:var(--text-primary);background:rgba(245,158,11,0.1)}nav a.active{color:var(--accent-gold)}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn-login{background:transparent;border:1px solid var(--accent-gold);color:var(--accent-gold);padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.25s;font-family:'Source Sans 3',sans-serif}
+.btn-login:hover{background:var(--accent-gold);color:var(--bg-primary)}
+.btn-signup{background:var(--gradient-gold);border:none;color:var(--bg-primary);padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.25s;font-family:'Source Sans 3',sans-serif}
+.btn-signup:hover{transform:translateY(-1px);box-shadow:var(--shadow-glow)}
+.lang-switch{display:flex;background:var(--bg-card);border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-right:4px}
+.lang-btn{padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all 0.2s;font-family:'Source Sans 3',sans-serif;display:flex;align-items:center;gap:4px}
+.lang-btn.active{background:rgba(245,158,11,0.15);color:var(--accent-gold)}.lang-btn:hover:not(.active){color:var(--text-secondary)}
+
+.hero{margin-top:68px;padding:80px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(245,158,11,0.06) 0%,transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:50px;padding:6px 18px;font-size:12px;font-weight:600;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:24px}
+.hero-badge .dot{width:8px;height:8px;background:var(--accent-green);border-radius:50%;animation:live-dot 1.5s ease-in-out infinite}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;line-height:1.05;margin-bottom:20px}
+.hero h1 .gold{background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:18px;color:var(--text-secondary);max-width:600px;margin:0 auto 36px;line-height:1.7}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.hero-cta .btn-signup,.hero-cta .btn-login{padding:14px 36px;font-size:16px;border-radius:12px}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+.hero-stat{text-align:center}.hero-stat .num{font-family:'Oswald',sans-serif;font-size:40px;font-weight:700;color:var(--accent-gold);display:block}
+.hero-stat .label{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.container{max-width:1280px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.section-title{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;display:flex;align-items:center;gap:12px}
+.section-title .icon{width:36px;height:36px;background:rgba(245,158,11,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.section-subtitle{color:var(--text-muted);font-size:14px}
+.view-all{color:var(--accent-gold);font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:gap 0.2s}.view-all:hover{opacity:.8}
+.tabs{display:flex;gap:4px;background:var(--bg-secondary);border-radius:12px;padding:4px;margin-bottom:28px;width:fit-content;flex-wrap:wrap}
+.tab{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:'Source Sans 3',sans-serif;white-space:nowrap}
+.tab:hover{color:var(--text-secondary)}.tab.active{background:var(--bg-card);color:var(--accent-gold);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+
+.tips-table{width:100%;border-collapse:separate;border-spacing:0 6px}
+.tips-table thead th{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.tips-table tbody tr{background:var(--bg-card);transition:all 0.2s;cursor:pointer}.tips-table tbody tr:hover{background:var(--bg-card-hover)}
+.tips-table td{padding:16px;font-size:14px;vertical-align:middle}.tips-table td:first-child{border-radius:10px 0 0 10px}.tips-table td:last-child{border-radius:0 10px 10px 0}
+.match-teams{font-weight:600;font-size:15px}.match-league{font-size:12px;color:var(--text-muted)}
+.match-time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-secondary)}.match-time .date{color:var(--text-muted);font-size:11px}
+.tip-pick{display:inline-flex;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--accent-green);padding:5px 14px;border-radius:6px;font-weight:700;font-size:13px}
+.tip-odds{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent-gold);font-size:15px}
+.confidence-bar{width:60px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px}
+.confidence-fill{height:100%;border-radius:3px}.confidence-fill.high{background:var(--accent-green)}.confidence-fill.mid{background:var(--accent-gold)}.confidence-fill.low{background:var(--accent-red)}
+.status-badge{padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.status-badge.win{background:rgba(16,185,129,0.15);color:var(--accent-green)}.status-badge.lose{background:rgba(239,68,68,0.15);color:var(--accent-red)}
+.status-badge.pending{background:rgba(59,130,246,0.15);color:var(--accent-blue)}.status-badge.void{background:rgba(100,116,139,0.15);color:var(--text-muted)}
+
+.premium-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.premium-tip-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:all 0.3s}
+.premium-tip-card:hover{border-color:rgba(245,158,11,0.3);transform:translateY(-2px);box-shadow:var(--shadow-card)}
+.premium-tip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-gold)}
+.premium-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.premium-league{font-size:12px;color:var(--accent-gold);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.premium-time{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted)}
+.premium-match{font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;margin-bottom:16px;line-height:1.3}.premium-match .vs{color:var(--text-muted);font-size:14px;font-family:'Source Sans 3',sans-serif;margin:0 8px}
+.premium-locked{position:relative;background:rgba(10,14,23,0.6);border:1px dashed var(--border-accent);border-radius:10px;padding:20px;text-align:center;backdrop-filter:blur(6px)}
+.locked-content{filter:blur(8px);user-select:none;pointer-events:none;font-size:14px;color:var(--text-muted);line-height:1.8}
+.lock-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}.lock-icon{font-size:28px;margin-bottom:6px}.lock-text{font-size:13px;font-weight:600;color:var(--accent-gold)}
+.btn-unlock{display:inline-flex;align-items:center;gap:8px;background:var(--gradient-gold);color:var(--bg-primary);padding:10px 24px;border-radius:8px;border:none;font-weight:700;font-size:13px;cursor:pointer;margin-top:16px;transition:all 0.25s;font-family:'Source Sans 3',sans-serif}.btn-unlock:hover{transform:translateY(-2px);box-shadow:var(--shadow-glow)}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:start}
+.pricing-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;position:relative;transition:all 0.3s}
+.pricing-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card)}
+.pricing-card.popular{border-color:var(--accent-gold);box-shadow:var(--shadow-glow);transform:scale(1.04)}.pricing-card.popular:hover{transform:scale(1.04) translateY(-4px)}
+.popular-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:var(--bg-primary);padding:4px 20px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.pricing-name{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;margin-bottom:8px}
+.pricing-price .amount{font-family:'Oswald',sans-serif;font-size:42px;font-weight:700;color:var(--accent-gold)}
+.pricing-price .currency{font-size:16px;color:var(--text-muted);vertical-align:super}.pricing-price .period{font-size:14px;color:var(--text-muted)}
+.pricing-save{font-size:12px;color:var(--accent-green);font-weight:600;margin-bottom:20px;min-height:18px}
+.pricing-features{list-style:none;text-align:left;margin-bottom:28px}
+.pricing-features li{padding:8px 0;font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(30,41,59,0.5)}
+.pricing-features li:last-child{border-bottom:none}.pricing-features .check{color:var(--accent-green);flex-shrink:0}.pricing-features .cross{color:var(--text-muted);flex-shrink:0;opacity:0.4}
+.btn-pricing{width:100%;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.25s;font-family:'Source Sans 3',sans-serif;border:none}
+.btn-pricing.primary{background:var(--gradient-gold);color:var(--bg-primary)}.btn-pricing.primary:hover{box-shadow:var(--shadow-glow)}
+.btn-pricing.secondary{background:transparent;border:1px solid var(--border-accent);color:var(--text-primary)}.btn-pricing.secondary:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center}
+.stat-card .stat-value{font-family:'Oswald',sans-serif;font-size:36px;font-weight:700;margin-bottom:6px}
+.stat-card .stat-value.green{color:var(--accent-green)}.stat-card .stat-value.gold{color:var(--accent-gold)}.stat-card .stat-value.blue{color:var(--accent-blue)}.stat-card .stat-value.red{color:var(--accent-red)}
+.stat-card .stat-label{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+.history-table{width:100%;border-collapse:separate;border-spacing:0}
+.history-table th{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.history-table td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(30,41,59,0.3)}.history-table tr:hover td{background:rgba(26,34,54,0.5)}
+
+.history-filters{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.filter-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.filter-select{background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);padding:8px 14px;border-radius:8px;font-size:13px;font-family:'Source Sans 3',sans-serif;cursor:pointer;outline:none}.filter-select:focus{border-color:var(--accent-gold)}
+.history-summary{display:flex;gap:24px;padding:16px 20px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border);margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.summary-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.summary-dot.win{background:var(--accent-green)}.summary-dot.lose{background:var(--accent-red)}.summary-dot.total{background:var(--accent-gold)}
+.summary-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;margin-right:4px}.summary-label{font-size:13px;color:var(--text-muted)}
+.pagination{display:flex;justify-content:center;gap:6px;margin-top:28px}
+.page-btn{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'Source Sans 3',sans-serif}
+.page-btn:hover{border-color:var(--accent-gold);color:var(--accent-gold)}.page-btn.active{background:var(--accent-gold);color:var(--bg-primary);border-color:var(--accent-gold)}.page-btn.nav-btn{width:auto;padding:0 14px}
+
+.deposit-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.deposit-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all 0.25s}
+.deposit-card:hover{border-color:var(--accent-gold);transform:translateY(-2px)}.deposit-card.selected{border-color:var(--accent-gold);background:rgba(245,158,11,0.05)}
+.method-icon{font-size:32px;margin-bottom:10px}.method-name{font-weight:600;font-size:15px;margin-bottom:4px}.method-desc{font-size:12px;color:var(--text-muted)}
+.deposit-info{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;display:none}.deposit-info.show{display:block;animation:slideDown 0.3s ease-out}
+.deposit-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.deposit-row:last-child{border-bottom:none}
+.deposit-label{color:var(--text-muted);font-size:14px}.deposit-value{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.btn-copy{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);color:var(--accent-gold);padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Source Sans 3',sans-serif}.btn-copy:hover{background:rgba(245,158,11,0.2)}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center}.modal-overlay.show{display:flex}
+.modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:20px;max-width:90vw;padding:36px;animation:slideDown 0.3s ease-out;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}.modal-close:hover{background:var(--bg-card);color:var(--text-primary)}
+.modal h3{font-family:'Oswald',sans-serif;font-size:24px;font-weight:600;margin-bottom:20px}
+.modal-input,.admin-input{width:100%;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:14px;font-family:'Source Sans 3',sans-serif;margin-bottom:12px;outline:none}.modal-input:focus,.admin-input:focus{border-color:var(--accent-gold)}.modal-input::placeholder,.admin-input::placeholder{color:var(--text-muted)}
+.modal-btn{width:100%;padding:14px;background:var(--gradient-gold);border:none;border-radius:10px;color:var(--bg-primary);font-size:15px;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;margin-top:8px}.modal-btn:hover{box-shadow:var(--shadow-glow)}
+.modal-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text-muted);font-size:13px}.modal-divider::before,.modal-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.modal-link{text-align:center;margin-top:16px;font-size:14px;color:var(--text-muted)}.modal-link a{color:var(--accent-gold);text-decoration:none;font-weight:600;cursor:pointer}
+
+footer{border-top:1px solid var(--border);padding:40px 24px;margin-top:60px}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-brand{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--accent-gold)}.footer-copy{font-size:13px;color:var(--text-muted)}
+.footer-links{display:flex;gap:24px}.footer-links a{color:var(--text-muted);text-decoration:none;font-size:13px}.footer-links a:hover{color:var(--accent-gold)}
+.social-icon{width:38px;height:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;font-size:16px}.social-icon:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+.notification{position:fixed;bottom:24px;right:24px;background:var(--bg-card);border:1px solid var(--accent-green);border-radius:12px;padding:16px 24px;display:none;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:3000;animation:slideDown 0.3s ease-out;max-width:360px}.notification.show{display:flex}
+.ok-msg{margin-top:16px;padding:14px;background:rgba(16,185,129,0.08);border-radius:10px;font-size:13px;color:var(--accent-green);text-align:center}
+.page-section{display:none}.page-section.active{display:block}
+
+/* ===== ADMIN PANEL ===== */
+.admin-panel{margin-top:68px;padding:40px 0 60px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.admin-header h2{font-family:'Oswald',sans-serif;font-size:32px;display:flex;align-items:center;gap:12px}
+.admin-tabs{display:flex;gap:6px;margin-bottom:32px;flex-wrap:wrap}
+.admin-tab{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;border:1px solid var(--border);background:var(--bg-card);transition:all 0.2s;font-family:'Source Sans 3',sans-serif}
+.admin-tab:hover{border-color:var(--border-accent);color:var(--text-secondary)}
+.admin-tab.active{background:rgba(245,158,11,0.1);border-color:var(--accent-gold);color:var(--accent-gold)}
+.admin-section{display:none}.admin-section.active{display:block}
+
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.admin-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.admin-stat .val{font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:var(--accent-gold)}
+.admin-stat .lbl{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.admin-form{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px}
+.admin-form h4{font-family:'Oswald',sans-serif;font-size:20px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+.form-row.tri{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.admin-input{margin-bottom:0}
+.admin-select{width:100%;padding:14px 16px;background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:14px;font-family:'Source Sans 3',sans-serif;outline:none;cursor:pointer}.admin-select:focus{border-color:var(--accent-gold)}
+.admin-textarea{width:100%;padding:14px 16px;background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:14px;font-family:'Source Sans 3',sans-serif;outline:none;resize:vertical;min-height:80px}.admin-textarea:focus{border-color:var(--accent-gold)}
+.btn-admin{padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Source Sans 3',sans-serif;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-admin.gold{background:var(--gradient-gold);color:var(--bg-primary)}.btn-admin.gold:hover{box-shadow:var(--shadow-glow)}
+.btn-admin.green{background:rgba(16,185,129,0.15);color:var(--accent-green);border:1px solid rgba(16,185,129,0.3)}.btn-admin.green:hover{background:rgba(16,185,129,0.25)}
+.btn-admin.red{background:rgba(239,68,68,0.15);color:var(--accent-red);border:1px solid rgba(239,68,68,0.3)}.btn-admin.red:hover{background:rgba(239,68,68,0.25)}
+.btn-admin.blue{background:rgba(59,130,246,0.15);color:var(--accent-blue);border:1px solid rgba(59,130,246,0.3)}.btn-admin.blue:hover{background:rgba(59,130,246,0.25)}
+
+.admin-tip-list{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.admin-tip-item{display:grid;grid-template-columns:80px 2fr 1fr 1fr 80px 100px 120px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);gap:12px;font-size:14px}
+.admin-tip-item:last-child{border-bottom:none}
+.admin-tip-item:hover{background:var(--bg-card-hover)}
+.admin-tip-item .actions{display:flex;gap:6px}
+.admin-tip-item .actions button{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Source Sans 3',sans-serif;transition:all 0.2s}
+.btn-edit{background:rgba(59,130,246,0.15);color:var(--accent-blue)}.btn-edit:hover{background:rgba(59,130,246,0.25)}
+.btn-del{background:rgba(239,68,68,0.15);color:var(--accent-red)}.btn-del:hover{background:rgba(239,68,68,0.25)}
+.btn-status{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Source Sans 3',sans-serif}
+
+.price-edit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.price-edit-card{background:var(--bg-primary);border:1px solid var(--border);border-radius:12px;padding:24px}
+.price-edit-card h5{font-family:'Oswald',sans-serif;font-size:18px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+.admin-login-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 68px);padding:24px}
+.admin-login-box{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:48px;width:400px;max-width:100%;text-align:center}
+.admin-login-box h3{font-family:'Oswald',sans-serif;font-size:28px;margin-bottom:8px}
+.admin-login-box p{color:var(--text-muted);font-size:14px;margin-bottom:24px}
+
+@media(max-width:1024px){.pricing-grid{grid-template-columns:repeat(2,1fr)}.stats-grid,.admin-stats{grid-template-columns:repeat(2,1fr)}.admin-tip-item{grid-template-columns:1fr;gap:8px}.price-edit-grid{grid-template-columns:1fr}}
+@media(max-width:768px){nav{display:none}.hero h1{font-size:36px}.pricing-grid,.stats-grid,.admin-stats{grid-template-columns:1fr}.premium-grid{grid-template-columns:1fr}.deposit-methods{grid-template-columns:1fr}.tips-table,.history-table{display:block;overflow-x:auto}.footer-inner{flex-direction:column;text-align:center}.form-row,.form-row.tri{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+<div class="logo" onclick="showPage('home')"><div class="logo-icon">TK</div><div><div class="logo-text">TIPKING</div><div class="logo-sub" data-i18n="logo_sub"></div></div></div>
+<nav id="main-nav"></nav>
+<div class="nav-actions">
+<div class="lang-switch"><button class="lang-btn active" id="lang-vi" onclick="setLang('vi')">🇻🇳 VI</button><button class="lang-btn" id="lang-en" onclick="setLang('en')">🇬🇧 EN</button></div>
+<div id="auth-buttons"></div>
+</div>
+</div></header>
+
+<div class="page-section active" id="page-home"><div id="home-content"></div></div>
+<div class="page-section" id="page-free-tips"><div id="free-content"></div></div>
+<div class="page-section" id="page-premium"><div id="premium-content"></div></div>
+<div class="page-section" id="page-history"><div id="history-content"></div></div>
+<div class="page-section" id="page-pricing"><div id="pricing-content"></div></div>
+<div class="page-section" id="page-results"><div id="results-content"></div></div>
+<div class="page-section" id="page-admin"><div id="admin-content"></div></div>
+
+<div class="modal-overlay" id="modal-login"><div class="modal" style="width:420px"><button class="modal-close" onclick="closeModal('login')">✕</button><div id="login-modal-body"></div></div></div>
+<div class="modal-overlay" id="modal-signup"><div class="modal" style="width:420px"><button class="modal-close" onclick="closeModal('signup')">✕</button><div id="signup-modal-body"></div></div></div>
+<div class="modal-overlay" id="modal-deposit"><div class="modal" style="width:480px"><button class="modal-close" onclick="closeModal('deposit')">✕</button><div id="deposit-modal-body"></div></div></div>
+<div class="modal-overlay" id="modal-edit-tip"><div class="modal" style="width:600px"><button class="modal-close" onclick="closeModal('edit-tip')">✕</button><div id="edit-tip-body"></div></div></div>
+
+<div class="notification" id="notification"><span>✅</span><span id="notif-text"></span></div>
+
+<footer><div class="footer-inner">
+<div><div class="footer-brand">⚽ TIPKING</div><div class="footer-copy" data-i18n="footer_copy"></div></div>
+<div class="footer-links" id="footer-links"></div>
+<div style="display:flex;gap:12px"><a class="social-icon" href="#">📨</a><a class="social-icon" href="#">📘</a><a class="social-icon" href="#">💬</a></div>
+</div></footer>
+
+<script>
+// ===== i18n =====
+const L={vi:{
+logo_sub:'Chuyên Gia Tip Bóng Đá',nav_home:'Trang chủ',nav_free:'Tip Miễn Phí',nav_vip:'Tip VIP 👑',nav_history:'Lịch Sử',nav_pricing:'Bảng Giá',nav_results:'Thành Tích',
+btn_login:'Đăng Nhập',btn_signup:'Đăng Ký',hero_badge:'ĐANG LIVE — 3 TRẬN ĐÊM NAY',hero_l1:'NÂNG TẦM',hero_l2:'TỶ LỆ THẮNG',hero_l3:'CỦA BẠN',
+hero_desc:'Đội ngũ chuyên gia phân tích bóng đá hàng đầu Việt Nam. Tip chính xác, phân tích chuyên sâu, tỷ lệ thắng vượt trội.',
+cta_vip:'🔥 Mua VIP Ngay',cta_free:'Xem Tip Free',s_wr:'Win Rate T3/2026',s_tips:'Tips Đã Phát',s_profit:'Units Lợi Nhuận',s_members:'Thành Viên VIP',
+free_title:'TIP MIỄN PHÍ HÔM NAY',free_sub:'Cập nhật hàng ngày',view_all:'Xem tất cả →',
+th_time:'Thời gian',th_match:'Trận đấu',th_odds:'Tỷ lệ',th_conf:'Tin cậy',th_result:'Kết quả',th_date:'Ngày',th_league:'Giải',th_type:'Loại',th_score:'Tỷ số',
+vip_title:'TIP VIP — CHUYÊN GIA',vip_sub:'Phân tích chuyên sâu, tỷ lệ thắng 80%+',upgrade:'Nâng cấp VIP →',
+fp_title:'TIP MIỄN PHÍ',fp_sub:'3-5 tip miễn phí mỗi ngày',t_today:'Hôm nay',t_tom:'Ngày mai',t_yest:'Hôm qua',t_week:'Tuần này',t_total:'Tổng',
+cta_more:'Muốn nhận 10+ tip VIP mỗi ngày?',cta_desc:'Phân tích chuyên sâu, tỷ lệ win 80%+',cta_up:'🔥 Nâng Cấp VIP',
+vp_title:'TIP VIP — PREMIUM',vp_sub:'Phân tích sâu, kèo chất',t_today8:'Hôm nay (8)',t_tom5:'Ngày mai (5)',t_vhist:'Lịch sử VIP',
+hist_title:'LỊCH SỬ TIP',hist_sub:'Toàn bộ lịch sử — Minh bạch 100%',
+f_type:'Loại:',f_result:'Kết quả:',f_league:'Giải:',f_all:'Tất cả',f_free:'Miễn phí',f_vip:'VIP',
+sm_total:'Tổng',sm_win:'Thắng',sm_lose:'Thua',sm_profit:'Lợi nhuận',sm_wr:'Win Rate',
+pr_h1:'CHỌN GÓI',pr_h2:'PHÙ HỢP',pr_desc:'Đầu tư nhỏ — Lợi nhuận lớn.',popular:'🔥 PHỔ BIẾN NHẤT',buy:'Mua Ngay',
+dep_title:'NẠP TIỀN',dep_sub:'Nạp nhanh — Kích hoạt tức thì',dep_bank:'Chuyển khoản NH',dep_momo:'Ví MoMo',dep_zalo:'ZaloPay',
+dep_info:'Thông tin CK',dep_bname:'Ngân hàng',dep_acc:'Số TK',dep_owner:'Chủ TK',dep_note:'Nội dung',dep_auto:'✅ Tự động 1-5 phút',dep_instant:'✅ Kích hoạt tức thì',
+res_title:'THÀNH TÍCH',res_sub:'Cập nhật realtime',rs_wr:'Tỷ lệ thắng',rs_profit:'Units lợi nhuận',rs_sent:'Tips phát',rs_lost:'Tips thua',rs_recent:'Gần nhất',
+pending:'⏳ Chờ',unlock:'👑 Mở Khóa VIP',buy_from:'👑 Mua VIP — Từ 50K/ngày',vip_lock:'Nội dung VIP',
+prev:'← Trước',next:'Sau →',copied:'Đã copy: ',
+foot_about:'Về chúng tôi',foot_terms:'Điều khoản',foot_policy:'Chính sách',foot_contact:'Liên hệ',footer_copy:'© 2026 TipKing.',
+ml_title:'👋 Đăng Nhập',ms_title:'🚀 Tạo Tài Khoản',md_title:'💰 Nạp Tiền',ph_email:'Email hoặc SĐT',ph_pass:'Mật khẩu',ph_name:'Họ và tên',ph_phone:'Số điện thoại',
+m_or:'hoặc',m_google:'Đăng nhập Google',m_no_acc:'Chưa có TK?',m_has_acc:'Đã có TK?',m_signup:'Đăng Ký Ngay',m_plan:'Chọn gói',m_done:'✅ Đã Chuyển',m_support:'Telegram @TipKingVN',
+},en:{
+logo_sub:'Expert Football Tips',nav_home:'Home',nav_free:'Free Tips',nav_vip:'VIP 👑',nav_history:'History',nav_pricing:'Pricing',nav_results:'Results',
+btn_login:'Login',btn_signup:'Sign Up',hero_badge:'LIVE — 3 MATCHES TONIGHT',hero_l1:'ELEVATE',hero_l2:'YOUR WIN RATE',hero_l3:'TODAY',
+hero_desc:"Vietnam's top football analysis. Accurate tips, deep insights, superior win rates.",
+cta_vip:'🔥 Get VIP',cta_free:'Free Tips',s_wr:'Win Rate Mar/2026',s_tips:'Tips Sent',s_profit:'Units Profit',s_members:'VIP Members',
+free_title:"FREE TIPS TODAY",free_sub:'Updated daily',view_all:'View all →',
+th_time:'Time',th_match:'Match',th_odds:'Odds',th_conf:'Confidence',th_result:'Result',th_date:'Date',th_league:'League',th_type:'Type',th_score:'Score',
+vip_title:'VIP — EXPERT ANALYSIS',vip_sub:'Deep analysis, 80%+ monthly',upgrade:'Upgrade →',
+fp_title:'FREE TIPS',fp_sub:'3-5 free tips daily',t_today:'Today',t_tom:'Tomorrow',t_yest:'Yesterday',t_week:'This week',t_total:'Total',
+cta_more:'Want 10+ VIP tips daily?',cta_desc:'Deep analysis, 80%+ win, 24/7 support',cta_up:'🔥 Upgrade VIP',
+vp_title:'VIP — PREMIUM',vp_sub:'Premium odds, highest win rate',t_today8:'Today (8)',t_tom5:'Tomorrow (5)',t_vhist:'VIP History',
+hist_title:'TIP HISTORY',hist_sub:'Complete history — 100% Transparent',
+f_type:'Type:',f_result:'Result:',f_league:'League:',f_all:'All',f_free:'Free',f_vip:'VIP',
+sm_total:'Total',sm_win:'Win',sm_lose:'Lose',sm_profit:'Profit',sm_wr:'Win Rate',
+pr_h1:'CHOOSE YOUR',pr_h2:'PLAN',pr_desc:'Small investment — Big returns.',popular:'🔥 MOST POPULAR',buy:'Buy Now',
+dep_title:'PAYMENT',dep_sub:'Fast deposit — Instant activation',dep_bank:'Bank Transfer',dep_momo:'MoMo',dep_zalo:'ZaloPay',
+dep_info:'Transfer Info',dep_bname:'Bank',dep_acc:'Account #',dep_owner:'Name',dep_note:'Note',dep_auto:'✅ Auto 1-5 min',dep_instant:'✅ Instant',
+res_title:'RESULTS',res_sub:'Realtime updates',rs_wr:'Win Rate',rs_profit:'Units Profit',rs_sent:'Tips Sent',rs_lost:'Tips Lost',rs_recent:'Recent',
+pending:'⏳ Pending',unlock:'👑 Unlock VIP',buy_from:'👑 Get VIP — From 50K/day',vip_lock:'VIP Content',
+prev:'← Prev',next:'Next →',copied:'Copied: ',
+foot_about:'About',foot_terms:'Terms',foot_policy:'Privacy',foot_contact:'Contact',footer_copy:'© 2026 TipKing.',
+ml_title:'👋 Login',ms_title:'🚀 Sign Up',md_title:'💰 Deposit',ph_email:'Email or phone',ph_pass:'Password',ph_name:'Full name',ph_phone:'Phone',
+m_or:'or',m_google:'Google Sign In',m_no_acc:'No account?',m_has_acc:'Have account?',m_signup:'Sign Up Now',m_plan:'Choose plan',m_done:'✅ Transferred',m_support:'Telegram @TipKingVN',
+}};
+let lang='vi';function t(k){return L[lang][k]||L.vi[k]||k}
+function setLang(l){lang=l;document.getElementById('lang-vi').className='lang-btn'+(l==='vi'?' active':'');document.getElementById('lang-en').className='lang-btn'+(l==='en'?' active':'');renderAll();}
+
+// ===== DATA (localStorage) =====
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'tipking2026';
+let isAdmin = false;
+let loggedInUser = null; // {name, email} or null
+
+const defaultTips=[
+{id:1,time:'21:00',date:'19/03',h:'Arsenal',a:'Chelsea',lg:'Premier League',lk:'epl',tip:'Over 2.5',odds:1.85,conf:85,st:'pending',ty:'free',sc:'',analysis:''},
+{id:2,time:'23:30',date:'19/03',h:'Barcelona',a:'Atletico Madrid',lg:'La Liga',lk:'laliga',tip:'Barcelona -1',odds:1.92,conf:80,st:'pending',ty:'free',sc:'',analysis:''},
+{id:3,time:'02:00',date:'20/03',h:'PSG',a:'Bayern Munich',lg:'Champions League',lk:'ucl',tip:'BTTS Yes',odds:1.72,conf:72,st:'pending',ty:'free',sc:'',analysis:''},
+{id:4,time:'18:30',date:'19/03',h:'Juventus',a:'AC Milan',lg:'Serie A',lk:'seriea',tip:'Under 2.5',odds:1.80,conf:75,st:'win',ty:'free',sc:'1-0',analysis:''},
+{id:5,time:'21:00',date:'19/03',h:'Man United',a:'Liverpool',lg:'Premier League',lk:'epl',tip:'Liverpool -0.5/1',odds:1.95,conf:88,st:'pending',ty:'vip',sc:'',analysis:'Liverpool đang thống trị BXH với 68 điểm. Phong độ cực tốt, chuỗi 7W liên tiếp kèo Châu Á.'},
+{id:6,time:'00:45',date:'20/03',h:'Inter Milan',a:'Napoli',lg:'Serie A',lk:'seriea',tip:'Inter -0.5',odds:2.05,conf:82,st:'pending',ty:'vip',sc:'',analysis:'Inter giữ ngôi đầu bảng, phong độ sân nhà tuyệt vời.'},
+{id:7,time:'02:00',date:'20/03',h:'PSG',a:'Bayern Munich',lg:'Champions League',lk:'ucl',tip:'Bayern +0',odds:2.00,conf:85,st:'pending',ty:'vip',sc:'',analysis:'Bayern phong độ tốt nhất Châu Âu, lượt đi hòa 1-1.'},
+{id:8,time:'18:30',date:'18/03',h:'Man City',a:'Wolves',lg:'Premier League',lk:'epl',tip:'Man City -2',odds:1.90,conf:87,st:'win',ty:'vip',sc:'4-0',analysis:''},
+{id:9,time:'21:00',date:'18/03',h:'Real Madrid',a:'Getafe',lg:'La Liga',lk:'laliga',tip:'Over 2.5',odds:1.85,conf:80,st:'win',ty:'free',sc:'3-1',analysis:''},
+{id:10,time:'20:00',date:'17/03',h:'Bayern',a:'Freiburg',lg:'Bundesliga',lk:'bundesliga',tip:'Bayern -1.5',odds:2.05,conf:83,st:'win',ty:'vip',sc:'3-0',analysis:''},
+{id:11,time:'21:00',date:'17/03',h:'Tottenham',a:'Everton',lg:'Premier League',lk:'epl',tip:'BTTS Yes',odds:1.75,conf:70,st:'lose',ty:'free',sc:'1-0',analysis:''},
+{id:12,time:'21:00',date:'16/03',h:'Liverpool',a:'Brighton',lg:'Premier League',lk:'epl',tip:'Liverpool -1',odds:1.88,conf:85,st:'win',ty:'vip',sc:'3-1',analysis:''},
+{id:13,time:'18:30',date:'16/03',h:'Napoli',a:'Lazio',lg:'Serie A',lk:'seriea',tip:'Over 2.5',odds:1.82,conf:78,st:'win',ty:'free',sc:'2-1',analysis:''},
+{id:14,time:'20:00',date:'15/03',h:'PSG',a:'Monaco',lg:'Ligue 1',lk:'ligue1',tip:'PSG -0.5',odds:1.95,conf:80,st:'win',ty:'vip',sc:'2-1',analysis:''},
+{id:15,time:'20:30',date:'15/03',h:'Dortmund',a:'Stuttgart',lg:'Bundesliga',lk:'bundesliga',tip:'Over 3.0',odds:1.90,conf:72,st:'lose',ty:'vip',sc:'1-1',analysis:''},
+];
+
+const defaultPricing=[
+{id:'day',icon:'⚡',amount:'50K',period:'ngày',periodEn:'day',save:'',saveEn:'',popular:false},
+{id:'week',icon:'🔥',amount:'250K',period:'tuần',periodEn:'week',save:'Tiết kiệm 28%',saveEn:'Save 28%',popular:false},
+{id:'month',icon:'👑',amount:'699K',period:'tháng',periodEn:'month',save:'Tiết kiệm 53% — Chỉ 23K/ngày!',saveEn:'Save 53% — Only 23K/day!',popular:true},
+{id:'year',icon:'💎',amount:'4.99M',period:'năm',periodEn:'year',save:'Tiết kiệm 72% — Chỉ 14K/ngày!',saveEn:'Save 72% — Only 14K/day!',popular:false},
+];
+
+function loadData(){
+  try{const d=localStorage.getItem('tk_tips');return d?JSON.parse(d):null;}catch(e){return null;}
+}
+function saveData(){localStorage.setItem('tk_tips',JSON.stringify(allTips));localStorage.setItem('tk_pricing',JSON.stringify(pricing));}
+function loadPricing(){try{const d=localStorage.getItem('tk_pricing');return d?JSON.parse(d):null;}catch(e){return null;}}
+
+let allTips=loadData()||[...defaultTips];
+let pricing=loadPricing()||[...defaultPricing];
+let nextId=Math.max(...allTips.map(t=>t.id))+1;
+const lgN={epl:'Premier League',laliga:'La Liga',seriea:'Serie A',bundesliga:'Bundesliga',ligue1:'Ligue 1',ucl:'Champions League'};
+const PER=10;let hPage=1;
+
+// ===== RENDER HELPERS =====
+function lgIcon(lk){const m={epl:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',laliga:'🇪🇸',seriea:'🇮🇹',bundesliga:'🇩🇪',ligue1:'🇫🇷',ucl:'🏆'};return(m[lk]||'⚽')+' '+(lgN[lk]||lk)}
+function tipRow(t_){
+  const cc=t_.conf>=80?'high':t_.conf>=70?'mid':'low',co=t_.conf>=80?'var(--accent-green)':t_.conf>=70?'var(--accent-gold)':'var(--accent-red)';
+  const sb=t_.st==='win'?'<span class="status-badge win">✅ Win</span>':t_.st==='lose'?'<span class="status-badge lose">❌ Lose</span>':`<span class="status-badge pending">${t('pending')}</span>`;
+  return `<tr><td class="match-time"><div>${t_.time}</div><div class="date">${t_.date}</div></td><td><div class="match-teams">${t_.h} vs ${t_.a}</div><div class="match-league">${lgIcon(t_.lk)}</div></td><td><span class="tip-pick">${t_.tip}</span></td><td class="tip-odds">${Number(t_.odds).toFixed(2)}</td><td><div class="confidence-bar"><div class="confidence-fill ${cc}" style="width:${t_.conf}%"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:${co}">${t_.conf}%</span></td><td>${sb}</td></tr>`;
+}
+function vipCard(t_,full){
+  return `<div class="premium-tip-card"><div class="premium-card-header"><span class="premium-league">${lgIcon(t_.lk)}</span><span class="premium-time">${t_.time} — ${t_.date}</span></div><div class="premium-match" style="${full?'font-size:24px':''}">${t_.h} <span class="vs">vs</span> ${t_.a}</div><div class="premium-locked" style="${full?'padding:28px':''}"><div class="locked-content" style="line-height:2">📊 ${t_.analysis||'Analysis...'}<br>🎯 ${t_.tip} @ ${t_.odds}<br>📈 ${t_.conf}%</div><div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">${t('vip_lock')}</div></div></div><div style="text-align:center"><button class="btn-unlock" onclick="showPage('pricing')">${full?t('buy_from'):t('unlock')}</button></div></div>`;
+}
+
+function getFreeTips(){return allTips.filter(t=>t.ty==='free')}
+function getVipTips(){return allTips.filter(t=>t.ty==='vip')}
+function getPendingTips(ty){return allTips.filter(t=>t.st==='pending'&&(!ty||t.ty===ty))}
+
+// ===== MAIN RENDER =====
+function renderAll(){
+  document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(L[lang][k])e.textContent=L[lang][k];});
+  const adminLink=isAdmin?`<a data-page="admin" onclick="showPage('admin')" style="color:var(--accent-red)">⚙️ Admin</a>`:'';
+  document.getElementById('main-nav').innerHTML=`<a class="active" data-page="home" onclick="showPage('home')">${t('nav_home')}</a><a data-page="free-tips" onclick="showPage('free-tips')">${t('nav_free')}</a><a data-page="premium" onclick="showPage('premium')">${t('nav_vip')}</a><a data-page="history" onclick="showPage('history')">${t('nav_history')}</a><a data-page="pricing" onclick="showPage('pricing')">${t('nav_pricing')}</a><a data-page="results" onclick="showPage('results')">${t('nav_results')}</a>${adminLink}`;
+  document.getElementById('footer-links').innerHTML=`<a href="#">${t('foot_about')}</a><a href="#">${t('foot_terms')}</a><a href="#">${t('foot_policy')}</a><a href="#">${t('foot_contact')}</a>`;
+
+  // Auth buttons
+  if(loggedInUser){
+    document.getElementById('auth-buttons').innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px;color:var(--accent-gold);font-weight:600">👤 ${loggedInUser.name}</span>${isAdmin?`<button class="btn-login" onclick="showPage('admin')" style="font-size:12px;padding:5px 12px">⚙️ Admin</button>`:''}<button class="btn-login" onclick="doLogout()" style="font-size:12px;padding:5px 12px;border-color:var(--accent-red);color:var(--accent-red)">Đăng xuất</button></div>`;
+  } else {
+    document.getElementById('auth-buttons').innerHTML=`<button class="btn-login" onclick="openModal('login')">${t('btn_login')}</button><button class="btn-signup" onclick="openModal('signup')">${t('btn_signup')}</button>`;
+  }
+
+  const free=getFreeTips(),vip=getVipTips();
+  const done=allTips.filter(t=>t.st==='win'||t.st==='lose');
+  const wins=done.filter(t=>t.st==='win').length;
+  const wr=done.length?((wins/done.length)*100).toFixed(0)+'%':'—';
+
+  // HOME
+  document.getElementById('home-content').innerHTML=`<section class="hero"><div class="hero-badge"><span class="dot"></span> ${t('hero_badge')}</div><h1>${t('hero_l1')}<br><span class="gold">${t('hero_l2')}</span><br>${t('hero_l3')}</h1><p>${t('hero_desc')}</p><div class="hero-cta"><button class="btn-signup" onclick="showPage('pricing')">${t('cta_vip')}</button><button class="btn-login" onclick="showPage('free-tips')">${t('cta_free')}</button></div><div class="hero-stats"><div class="hero-stat"><span class="num">${wr}</span><span class="label">${t('s_wr')}</span></div><div class="hero-stat"><span class="num">${allTips.length}</span><span class="label">${t('s_tips')}</span></div><div class="hero-stat"><span class="num">+${done.reduce((s,x)=>s+parseFloat(x.st==='win'?(x.odds-1).toFixed(2):'-1'),0).toFixed(1)}</span><span class="label">${t('s_profit')}</span></div><div class="hero-stat"><span class="num">5,832</span><span class="label">${t('s_members')}</span></div></div></section>
+  <section style="padding:60px 0"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">⚽</span> ${t('free_title')}</div></div><a class="view-all" onclick="showPage('free-tips')">${t('view_all')}</a></div><table class="tips-table"><thead><tr><th>${t('th_time')}</th><th>${t('th_match')}</th><th>Tip</th><th>${t('th_odds')}</th><th>${t('th_conf')}</th><th>${t('th_result')}</th></tr></thead><tbody>${free.slice(0,3).map(tipRow).join('')}</tbody></table></div></section>
+  <section style="padding:0 0 60px"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">👑</span> ${t('vip_title')}</div></div><a class="view-all" onclick="showPage('pricing')">${t('upgrade')}</a></div><div class="premium-grid">${vip.filter(v=>v.st==='pending').slice(0,3).map(v=>vipCard(v,false)).join('')}</div></div></section>`;
+
+  // FREE
+  document.getElementById('free-content').innerHTML=`<section style="margin-top:68px;padding:40px 0 60px"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">⚽</span> ${t('fp_title')}</div><div class="section-subtitle">${t('fp_sub')}</div></div></div><table class="tips-table"><thead><tr><th>${t('th_time')}</th><th>${t('th_match')}</th><th>Tip</th><th>${t('th_odds')}</th><th>${t('th_conf')}</th><th>${t('th_result')}</th></tr></thead><tbody>${free.map(tipRow).join('')}</tbody></table><div style="text-align:center;margin-top:40px;padding:32px;background:var(--bg-card);border-radius:14px;border:1px dashed var(--accent-gold)"><div style="font-size:24px;margin-bottom:8px">👑</div><div style="font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;margin-bottom:8px">${t('cta_more')}</div><button class="btn-unlock" onclick="showPage('pricing')">${t('cta_up')}</button></div></div></section>`;
+
+  // VIP
+  document.getElementById('premium-content').innerHTML=`<section style="margin-top:68px;padding:40px 0 60px"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">👑</span> ${t('vp_title')}</div></div></div><div class="premium-grid" style="grid-template-columns:1fr">${vip.map(v=>vipCard(v,true)).join('')}</div></div></section>`;
+
+  // HISTORY
+  renderHistory();
+
+  // PRICING
+  document.getElementById('pricing-content').innerHTML=`<section style="margin-top:68px;padding:80px 0"><div class="container"><div style="text-align:center;margin-bottom:48px"><h2 style="font-family:'Oswald',sans-serif;font-size:40px;font-weight:700;margin-bottom:12px">${t('pr_h1')} <span class="gold">VIP</span> ${t('pr_h2')}</h2><p style="color:var(--text-secondary)">${t('pr_desc')}</p></div><div class="pricing-grid">${pricing.map(p=>`<div class="pricing-card ${p.popular?'popular':''}">${p.popular?`<div class="popular-badge">${t('popular')}</div>`:''}<div style="font-size:32px;margin-bottom:12px">${p.icon}</div><div class="pricing-name">${lang==='en'?p.id.toUpperCase():(p.id==='day'?'GÓI NGÀY':p.id==='week'?'GÓI TUẦN':p.id==='month'?'GÓI THÁNG':'GÓI NĂM')}</div><div class="pricing-price"><span class="currency">₫</span><span class="amount">${p.amount}</span><span class="period">/ ${lang==='en'?p.periodEn:p.period}</span></div><div class="pricing-save">${(lang==='en'?p.saveEn:p.save)||'&nbsp;'}</div><ul class="pricing-features"><li><span class="check">✓</span> All VIP tips</li><li><span class="check">✓</span> Analysis</li><li><span class="check">✓</span> Telegram</li></ul><button class="btn-pricing ${p.popular?'primary':'secondary'}" onclick="openModal('deposit')">${t('buy')}</button></div>`).join('')}</div>
+  <div style="padding:60px 0 0"><div class="section-header"><div><div class="section-title"><span class="icon">💳</span> ${t('dep_title')}</div></div></div><div class="deposit-methods"><div class="deposit-card" onclick="selectDeposit('bank',this)"><div class="method-icon">🏦</div><div class="method-name">${t('dep_bank')}</div><div class="method-desc">Vietcombank, MB...</div></div><div class="deposit-card" onclick="selectDeposit('momo',this)"><div class="method-icon">📱</div><div class="method-name">${t('dep_momo')}</div></div><div class="deposit-card" onclick="selectDeposit('zalo',this)"><div class="method-icon">💬</div><div class="method-name">${t('dep_zalo')}</div></div></div><div class="deposit-info" id="dep-bank"><h4>🏦 ${t('dep_info')}</h4><div class="deposit-row"><span class="deposit-label">${t('dep_bname')}</span><span class="deposit-value">Vietcombank</span></div><div class="deposit-row"><span class="deposit-label">${t('dep_acc')}</span><span class="deposit-value">1234 5678 9012 <button class="btn-copy" onclick="copyText('123456789012')">Copy</button></span></div><div class="deposit-row"><span class="deposit-label">${t('dep_owner')}</span><span class="deposit-value">TIPKING JSC</span></div><div class="ok-msg">${t('dep_auto')}</div></div><div class="deposit-info" id="dep-momo"><h4>📱 MoMo</h4><div class="deposit-row"><span class="deposit-label">MoMo</span><span class="deposit-value">0912 345 678 <button class="btn-copy" onclick="copyText('0912345678')">Copy</button></span></div><div class="ok-msg">${t('dep_instant')}</div></div><div class="deposit-info" id="dep-zalo"><h4>💬 ZaloPay</h4><div class="deposit-row"><span class="deposit-label">ZaloPay</span><span class="deposit-value">0912 345 678</span></div><div class="ok-msg">${t('dep_instant')}</div></div></div></div></section>`;
+
+  // RESULTS
+  const rDone=allTips.filter(x=>x.st==='win'||x.st==='lose').sort((a,b)=>b.id-a.id);
+  const rW=rDone.filter(x=>x.st==='win').length;const rL=rDone.filter(x=>x.st==='lose').length;
+  const rPL=rDone.reduce((s,x)=>s+(x.st==='win'?parseFloat(x.odds)-1:-1),0);
+  document.getElementById('results-content').innerHTML=`<section style="margin-top:68px;padding:40px 0 60px"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">📊</span> ${t('res_title')}</div></div></div><div class="stats-grid"><div class="stat-card"><div class="stat-value green">${rDone.length?((rW/rDone.length)*100).toFixed(1):'0'}%</div><div class="stat-label">${t('rs_wr')}</div></div><div class="stat-card"><div class="stat-value gold">${rPL>=0?'+':''}${rPL.toFixed(1)}</div><div class="stat-label">${t('rs_profit')}</div></div><div class="stat-card"><div class="stat-value blue">${rDone.length}</div><div class="stat-label">${t('rs_sent')}</div></div><div class="stat-card"><div class="stat-value red">${rL}</div><div class="stat-label">${t('rs_lost')}</div></div></div>
+  <div style="background:var(--bg-card);border-radius:14px;overflow:hidden;border:1px solid var(--border)"><table class="history-table"><thead><tr><th>${t('th_date')}</th><th>${t('th_match')}</th><th>Tip</th><th>${t('th_odds')}</th><th>${t('th_result')}</th><th>P/L</th></tr></thead><tbody>${rDone.slice(0,10).map(h=>{const pl=h.st==='win'?(parseFloat(h.odds)-1).toFixed(2):'-1.00';return`<tr><td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:13px">${h.date}</td><td style="font-weight:600">${h.h} vs ${h.a}</td><td><span class="tip-pick">${h.tip}</span></td><td class="tip-odds">${Number(h.odds).toFixed(2)}</td><td><span class="status-badge ${h.st}">${h.st==='win'?'✅ Win':'❌ Lose'}</span></td><td style="color:${h.st==='win'?'var(--accent-green)':'var(--accent-red)'};font-weight:700;font-family:'JetBrains Mono',monospace">${h.st==='win'?'+':''}${pl}</td></tr>`}).join('')}</tbody></table></div></div></section>`;
+
+  // MODALS
+  document.getElementById('login-modal-body').innerHTML=`<h3>${t('ml_title')}</h3><input class="modal-input" id="login-user" placeholder="${t('ph_email')}" onkeypress="if(event.key==='Enter')document.getElementById('login-pass').focus()"><input class="modal-input" type="password" id="login-pass" placeholder="${t('ph_pass')}" onkeypress="if(event.key==='Enter')doLogin()"><button class="modal-btn" onclick="doLogin()">${t('btn_login')}</button><div class="modal-divider">${t('m_or')}</div><button class="modal-btn" style="background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border)">${t('m_google')}</button><div class="modal-link">${t('m_no_acc')} <a onclick="closeModal('login');openModal('signup')">${t('btn_signup')}</a></div>`;
+  document.getElementById('signup-modal-body').innerHTML=`<h3>${t('ms_title')}</h3><input class="modal-input" id="signup-name" placeholder="${t('ph_name')}"><input class="modal-input" id="signup-email" type="email" placeholder="Email"><input class="modal-input" type="tel" placeholder="${t('ph_phone')}"><input class="modal-input" type="password" placeholder="${t('ph_pass')}"><button class="modal-btn" onclick="doSignup()">${t('m_signup')}</button><div class="modal-link">${t('m_has_acc')} <a onclick="closeModal('signup');openModal('login')">${t('btn_login')}</a></div>`;
+  document.getElementById('deposit-modal-body').innerHTML=`<h3>${t('md_title')}</h3><select class="modal-input" style="cursor:pointer">${pricing.map(p=>`<option ${p.popular?'selected':''}>${p.icon} ${p.amount}₫ / ${lang==='en'?p.periodEn:p.period}</option>`).join('')}</select><div style="padding:16px;background:var(--bg-card);border-radius:10px;margin-bottom:16px"><div style="font-weight:700">Vietcombank — 1234 5678 9012</div><div style="font-size:14px;color:var(--text-secondary)">TIPKING JSC</div></div><button class="modal-btn">${t('m_done')}</button>`;
+
+  // ADMIN
+  renderAdmin();
+
+  // Re-highlight nav
+  const ap=document.querySelector('.page-section.active');
+  if(ap){const id=ap.id.replace('page-','');document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active',a.getAttribute('data-page')===id));}
+}
+
+// ===== HISTORY =====
+function renderHistory(){
+  const typeF=document.getElementById('hf-type')?.value||'all';
+  const resultF=document.getElementById('hf-result')?.value||'all';
+  const leagueF=document.getElementById('hf-league')?.value||'all';
+  let f=allTips.filter(h=>h.st!=='pending').sort((a,b)=>b.id-a.id);
+  if(typeF!=='all')f=f.filter(h=>h.ty===typeF);
+  if(resultF!=='all')f=f.filter(h=>h.st===resultF);
+  if(leagueF!=='all')f=f.filter(h=>h.lk===leagueF);
+  const w=f.filter(x=>x.st==='win').length,lo=f.filter(x=>x.st==='lose').length;
+  const pl=f.reduce((s,x)=>s+(x.st==='win'?parseFloat(x.odds)-1:-1),0);
+  const wr_=(w+lo)?((w/(w+lo))*100).toFixed(1):'0.0';
+  const tp=Math.ceil(f.length/PER);if(hPage>tp)hPage=tp||1;
+  const pg=f.slice((hPage-1)*PER,hPage*PER);
+  let pag='';
+  if(tp>1){pag+=`<button class="page-btn nav-btn" ${hPage<=1?'disabled style="opacity:.3"':`onclick="hPage--;renderHistory()"`}>${t('prev')}</button>`;for(let i=1;i<=tp;i++)pag+=`<button class="page-btn ${i===hPage?'active':''}" onclick="hPage=${i};renderHistory()">${i}</button>`;pag+=`<button class="page-btn nav-btn" ${hPage>=tp?'disabled style="opacity:.3"':`onclick="hPage++;renderHistory()"`}>${t('next')}</button>`;}
+  document.getElementById('history-content').innerHTML=`<section style="margin-top:68px;padding:40px 0 60px"><div class="container"><div class="section-header"><div><div class="section-title"><span class="icon">📋</span> ${t('hist_title')}</div><div class="section-subtitle">${t('hist_sub')}</div></div></div>
+  <div class="history-filters"><span class="filter-label">${t('f_type')}</span><select class="filter-select" id="hf-type" onchange="hPage=1;renderHistory()"><option value="all">${t('f_all')}</option><option value="free" ${typeF==='free'?'selected':''}>${t('f_free')}</option><option value="vip" ${typeF==='vip'?'selected':''}>${t('f_vip')}</option></select><span class="filter-label">${t('f_result')}</span><select class="filter-select" id="hf-result" onchange="hPage=1;renderHistory()"><option value="all">${t('f_all')}</option><option value="win" ${resultF==='win'?'selected':''}>Win</option><option value="lose" ${resultF==='lose'?'selected':''}>Lose</option></select><span class="filter-label">${t('f_league')}</span><select class="filter-select" id="hf-league" onchange="hPage=1;renderHistory()"><option value="all">${t('f_all')}</option>${Object.entries(lgN).map(([k,v])=>`<option value="${k}" ${leagueF===k?'selected':''}>${v}</option>`).join('')}</select></div>
+  <div class="history-summary"><span><span class="summary-dot total"></span><span class="summary-num">${f.length}</span><span class="summary-label">${t('sm_total')}</span></span><span><span class="summary-dot win"></span><span class="summary-num" style="color:var(--accent-green)">${w}</span><span class="summary-label">${t('sm_win')}</span></span><span><span class="summary-dot lose"></span><span class="summary-num" style="color:var(--accent-red)">${lo}</span><span class="summary-label">${t('sm_lose')}</span></span><span style="margin-left:auto"><span class="summary-label">${t('sm_profit')}: </span><span class="summary-num" style="color:${pl>=0?'var(--accent-green)':'var(--accent-red)'}">${pl>=0?'+':''}${pl.toFixed(2)}</span></span><span><span class="summary-label">${t('sm_wr')}: </span><span class="summary-num" style="color:var(--accent-gold)">${wr_}%</span></span></div>
+  <div style="background:var(--bg-card);border-radius:14px;overflow:hidden;border:1px solid var(--border)"><table class="history-table"><thead><tr><th>${t('th_date')}</th><th>${t('th_match')}</th><th>${t('th_league')}</th><th>Tip</th><th>${t('th_odds')}</th><th>${t('th_type')}</th><th>${t('th_score')}</th><th>${t('th_result')}</th><th>P/L</th></tr></thead><tbody>${pg.map(h=>{const pl_=h.st==='win'?(parseFloat(h.odds)-1).toFixed(2):'-1.00';return`<tr><td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:13px">${h.date}</td><td style="font-weight:600">${h.h} vs ${h.a}</td><td style="font-size:12px;color:var(--text-muted)">${lgN[h.lk]||h.lk}</td><td><span class="tip-pick">${h.tip}</span></td><td class="tip-odds">${Number(h.odds).toFixed(2)}</td><td><span style="font-size:11px;padding:3px 10px;border-radius:4px;font-weight:700;background:${h.ty==='vip'?'rgba(245,158,11,.12)':'rgba(59,130,246,.12)'};color:${h.ty==='vip'?'var(--accent-gold)':'var(--accent-blue)'}">${h.ty==='vip'?'VIP':'FREE'}</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px">${h.sc||'—'}</td><td><span class="status-badge ${h.st}">${h.st==='win'?'✅ Win':'❌ Lose'}</span></td><td style="color:${h.st==='win'?'var(--accent-green)':'var(--accent-red)'};font-weight:700;font-family:'JetBrains Mono',monospace">${h.st==='win'?'+':''}${pl_}</td></tr>`}).join('')}</tbody></table></div><div class="pagination">${pag}</div></div></section>`;
+}
+
+// ===== ADMIN =====
+let adminTab='tips';
+function renderAdmin(){
+  if(!isAdmin){
+    document.getElementById('admin-content').innerHTML=`<div class="admin-login-wrap"><div class="admin-login-box"><div style="font-size:48px;margin-bottom:16px">🔐</div><h3>ADMIN PANEL</h3><p>Đăng nhập quản trị viên</p><input class="modal-input" type="text" id="admin-user-input" placeholder="Tên đăng nhập" onkeypress="if(event.key==='Enter')document.getElementById('admin-pass-input').focus()"><input class="modal-input" type="password" id="admin-pass-input" placeholder="Mật khẩu" onkeypress="if(event.key==='Enter')adminLogin()"><button class="modal-btn" onclick="adminLogin()">🔑 Đăng Nhập Admin</button><div style="margin-top:16px;font-size:12px;color:var(--text-muted)">Mặc định: <code style="color:var(--accent-gold)">admin</code> / <code style="color:var(--accent-gold)">tipking2026</code></div></div></div>`;
+    return;
+  }
+  const total=allTips.length,pend=allTips.filter(x=>x.st==='pending').length,w=allTips.filter(x=>x.st==='win').length,l=allTips.filter(x=>x.st==='lose').length;
+
+  let tabContent='';
+  if(adminTab==='tips'){
+    tabContent=`<div class="admin-form"><h4>➕ Đăng Tip Mới</h4>
+    <div class="form-row tri"><div class="form-group"><label>Đội nhà</label><input class="admin-input" id="at-home" placeholder="Arsenal"></div><div class="form-group"><label>Đội khách</label><input class="admin-input" id="at-away" placeholder="Chelsea"></div><div class="form-group"><label>Giải đấu</label><select class="admin-select" id="at-league">${Object.entries(lgN).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div></div>
+    <div class="form-row tri"><div class="form-group"><label>Giờ (HH:MM)</label><input class="admin-input" id="at-time" placeholder="21:00"></div><div class="form-group"><label>Ngày (DD/MM)</label><input class="admin-input" id="at-date" placeholder="19/03"></div><div class="form-group"><label>Loại</label><select class="admin-select" id="at-type"><option value="free">🆓 Miễn phí</option><option value="vip">👑 VIP</option></select></div></div>
+    <div class="form-row tri"><div class="form-group"><label>Tip / Kèo</label><input class="admin-input" id="at-tip" placeholder="Over 2.5"></div><div class="form-group"><label>Odds</label><input class="admin-input" id="at-odds" placeholder="1.85" type="number" step="0.01"></div><div class="form-group"><label>Tin cậy (%)</label><input class="admin-input" id="at-conf" placeholder="85" type="number" min="1" max="100"></div></div>
+    <div class="form-row full"><div class="form-group"><label>Phân tích (VIP)</label><textarea class="admin-textarea" id="at-analysis" placeholder="Nhập phân tích chi tiết cho tip VIP..."></textarea></div></div>
+    <div style="display:flex;gap:12px;margin-top:8px"><button class="btn-admin gold" onclick="addTip()">✅ Đăng Tip</button><button class="btn-admin blue" onclick="clearForm()">🔄 Reset</button></div></div>
+
+    <h4 style="font-family:'Oswald',sans-serif;font-size:20px;margin-bottom:16px">📋 Danh Sách Tip (${total})</h4>
+    <div class="admin-tip-list">
+    <div class="admin-tip-item" style="font-weight:700;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px"><span>Ngày</span><span>Trận đấu</span><span>Tip</span><span>Odds</span><span>Loại</span><span>Trạng thái</span><span>Hành động</span></div>
+    ${allTips.sort((a,b)=>b.id-a.id).map(tip=>`<div class="admin-tip-item">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted)">${tip.date}<br>${tip.time}</span>
+      <span style="font-weight:600">${tip.h} vs ${tip.a}<br><span style="font-size:11px;color:var(--text-muted)">${lgN[tip.lk]||tip.lk}</span></span>
+      <span><span class="tip-pick">${tip.tip}</span></span>
+      <span class="tip-odds">${Number(tip.odds).toFixed(2)}</span>
+      <span><span style="font-size:11px;padding:3px 10px;border-radius:4px;font-weight:700;background:${tip.ty==='vip'?'rgba(245,158,11,.12)':'rgba(59,130,246,.12)'};color:${tip.ty==='vip'?'var(--accent-gold)':'var(--accent-blue)'}">${tip.ty==='vip'?'👑 VIP':'🆓 FREE'}</span></span>
+      <span>${tip.st==='pending'?`<select class="btn-status" onchange="setStatus(${tip.id},this.value)" style="background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-size:12px"><option value="pending" selected>⏳ Chờ</option><option value="win">✅ Win</option><option value="lose">❌ Lose</option></select>`:`<span class="status-badge ${tip.st}">${tip.st==='win'?'✅ Win':'❌ Lose'}</span>`}</span>
+      <span class="actions"><button class="btn-edit" onclick="editTip(${tip.id})">✏️</button><button class="btn-del" onclick="deleteTip(${tip.id})">🗑️</button></span>
+    </div>`).join('')}</div>`;
+  } else if(adminTab==='pricing'){
+    tabContent=`<div class="admin-form"><h4>💰 Chỉnh Sửa Bảng Giá</h4>
+    <div class="price-edit-grid">${pricing.map((p,i)=>`<div class="price-edit-card"><h5>${p.icon} ${p.id==='day'?'Gói Ngày':p.id==='week'?'Gói Tuần':p.id==='month'?'Gói Tháng':'Gói Năm'} ${p.popular?'⭐':''}
+    </h5><div class="form-group" style="margin-bottom:12px"><label>Giá (VD: 50K, 699K, 4.99M)</label><input class="admin-input" id="price-${p.id}" value="${p.amount}"></div><div class="form-group" style="margin-bottom:12px"><label>Mô tả tiết kiệm (VI)</label><input class="admin-input" id="save-${p.id}" value="${p.save}"></div><div class="form-group" style="margin-bottom:12px"><label>Save text (EN)</label><input class="admin-input" id="saveen-${p.id}" value="${p.saveEn}"></div><div class="form-group"><label><input type="checkbox" id="pop-${p.id}" ${p.popular?'checked':''}> Phổ biến nhất</label></div></div>`).join('')}</div>
+    <div style="margin-top:20px"><button class="btn-admin gold" onclick="savePricing()">💾 Lưu Bảng Giá</button></div></div>`;
+  } else if(adminTab==='settings'){
+    tabContent=`<div class="admin-form"><h4>⚙️ Cài Đặt Tài Khoản Admin</h4>
+    <div class="form-row"><div class="form-group"><label>Tên đăng nhập</label><input class="admin-input" id="new-user" placeholder="Tên đăng nhập mới" value="${localStorage.getItem('tk_admin_user')||ADMIN_USER}"></div><div class="form-group"><label>Mật khẩu mới</label><input class="admin-input" type="password" id="new-pass" placeholder="Nhập mật khẩu mới"></div></div>
+    <div style="display:flex;gap:12px;margin-top:8px"><button class="btn-admin gold" onclick="saveAdminCreds()">💾 Lưu Thay Đổi</button><button class="btn-admin red" onclick="resetData()">🗑️ Reset Toàn Bộ Data</button><button class="btn-admin blue" onclick="doLogout()">🚪 Đăng Xuất Admin</button></div></div>`;
+  }
+
+  document.getElementById('admin-content').innerHTML=`<section class="admin-panel"><div class="container">
+  <div class="admin-header"><h2>⚙️ ADMIN PANEL</h2><button class="btn-admin red" onclick="doLogout()" style="font-size:13px">🚪 Đăng Xuất</button></div>
+  <div class="admin-stats"><div class="admin-stat"><div class="val">${total}</div><div class="lbl">Tổng Tip</div></div><div class="admin-stat"><div class="val" style="color:var(--accent-blue)">${pend}</div><div class="lbl">Đang Chờ</div></div><div class="admin-stat"><div class="val" style="color:var(--accent-green)">${w}</div><div class="lbl">Thắng</div></div><div class="admin-stat"><div class="val" style="color:var(--accent-red)">${l}</div><div class="lbl">Thua</div></div></div>
+  <div class="admin-tabs"><button class="admin-tab ${adminTab==='tips'?'active':''}" onclick="adminTab='tips';renderAdmin()">📝 Quản Lý Tip</button><button class="admin-tab ${adminTab==='pricing'?'active':''}" onclick="adminTab='pricing';renderAdmin()">💰 Bảng Giá</button><button class="admin-tab ${adminTab==='settings'?'active':''}" onclick="adminTab='settings';renderAdmin()">⚙️ Cài Đặt</button></div>
+  ${tabContent}
+  </div></section>`;
+}
+
+function doLogin(){
+  const user=document.getElementById('login-user')?.value?.trim();
+  const pass=document.getElementById('login-pass')?.value;
+  if(!user||!pass){showNotif('❌ Vui lòng nhập đầy đủ!');return;}
+  const savedUser=localStorage.getItem('tk_admin_user')||ADMIN_USER;
+  const savedPass=localStorage.getItem('tk_admin_pass')||ADMIN_PASS;
+  if(user===savedUser&&pass===savedPass){
+    isAdmin=true;loggedInUser={name:'Admin'};closeModal('login');showPage('admin');renderAll();showNotif('✅ Chào Admin! Đã vào trang quản trị.');
+  } else {
+    // Regular user login - just log them in normally
+    loggedInUser={name:user};closeModal('login');renderAll();showNotif('✅ Đăng nhập thành công! Chào '+user);
+  }
+}
+
+function doSignup(){
+  const name=document.getElementById('signup-name')?.value?.trim();
+  const email=document.getElementById('signup-email')?.value?.trim();
+  if(!name||!email){showNotif('❌ Vui lòng nhập đầy đủ!');return;}
+  loggedInUser={name};closeModal('signup');renderAll();showNotif('✅ Đăng ký thành công! Chào '+name);
+}
+
+function doLogout(){
+  isAdmin=false;loggedInUser=null;showPage('home');renderAll();showNotif('👋 Đã đăng xuất!');
+}
+
+function adminLogin(){
+  const user=document.getElementById('admin-user-input')?.value?.trim();
+  const pass=document.getElementById('admin-pass-input')?.value;
+  const savedUser=localStorage.getItem('tk_admin_user')||ADMIN_USER;
+  const savedPass=localStorage.getItem('tk_admin_pass')||ADMIN_PASS;
+  if(user===savedUser&&pass===savedPass){isAdmin=true;renderAll();showNotif('✅ Đăng nhập Admin thành công!');}
+  else showNotif('❌ Sai tên đăng nhập hoặc mật khẩu!');
+}
+
+function addTip(){
+  const h=document.getElementById('at-home').value.trim();
+  const a=document.getElementById('at-away').value.trim();
+  const lk=document.getElementById('at-league').value;
+  const time=document.getElementById('at-time').value.trim();
+  const date=document.getElementById('at-date').value.trim();
+  const ty=document.getElementById('at-type').value;
+  const tip=document.getElementById('at-tip').value.trim();
+  const odds=parseFloat(document.getElementById('at-odds').value);
+  const conf=parseInt(document.getElementById('at-conf').value);
+  const analysis=document.getElementById('at-analysis').value.trim();
+  if(!h||!a||!time||!date||!tip||!odds||!conf){showNotif('❌ Vui lòng điền đầy đủ thông tin!');return;}
+  allTips.push({id:nextId++,time,date,h,a,lg:lgN[lk],lk,tip,odds,conf,st:'pending',ty,sc:'',analysis});
+  saveData();clearForm();renderAll();showNotif('✅ Đã đăng tip mới!');
+}
+
+function clearForm(){
+  ['at-home','at-away','at-time','at-date','at-tip','at-odds','at-conf','at-analysis'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+}
+
+function setStatus(id,st){
+  const tip=allTips.find(t=>t.id===id);
+  if(tip){
+    tip.st=st;
+    if(st!=='pending'&&!tip.sc){
+      const sc=prompt('Nhập tỷ số (VD: 2-1):');
+      if(sc)tip.sc=sc;
+    }
+    saveData();renderAll();showNotif(`✅ Cập nhật: ${tip.h} vs ${tip.a} → ${st.toUpperCase()}`);
+  }
+}
+
+function deleteTip(id){
+  if(!confirm('Xóa tip này?'))return;
+  allTips=allTips.filter(t=>t.id!==id);
+  saveData();renderAll();showNotif('🗑️ Đã xóa tip!');
+}
+
+function editTip(id){
+  const tip=allTips.find(t=>t.id===id);if(!tip)return;
+  document.getElementById('edit-tip-body').innerHTML=`<h3>✏️ Sửa Tip #${id}</h3>
+  <div class="form-row"><div class="form-group"><label>Đội nhà</label><input class="admin-input" id="et-home" value="${tip.h}"></div><div class="form-group"><label>Đội khách</label><input class="admin-input" id="et-away" value="${tip.a}"></div></div>
+  <div class="form-row tri"><div class="form-group"><label>Giờ</label><input class="admin-input" id="et-time" value="${tip.time}"></div><div class="form-group"><label>Ngày</label><input class="admin-input" id="et-date" value="${tip.date}"></div><div class="form-group"><label>Giải</label><select class="admin-select" id="et-league">${Object.entries(lgN).map(([k,v])=>`<option value="${k}" ${tip.lk===k?'selected':''}>${v}</option>`).join('')}</select></div></div>
+  <div class="form-row tri"><div class="form-group"><label>Tip</label><input class="admin-input" id="et-tip" value="${tip.tip}"></div><div class="form-group"><label>Odds</label><input class="admin-input" id="et-odds" value="${tip.odds}" type="number" step="0.01"></div><div class="form-group"><label>Tin cậy %</label><input class="admin-input" id="et-conf" value="${tip.conf}" type="number"></div></div>
+  <div class="form-row"><div class="form-group"><label>Loại</label><select class="admin-select" id="et-type"><option value="free" ${tip.ty==='free'?'selected':''}>🆓 Free</option><option value="vip" ${tip.ty==='vip'?'selected':''}>👑 VIP</option></select></div><div class="form-group"><label>Tỷ số</label><input class="admin-input" id="et-score" value="${tip.sc}" placeholder="2-1"></div></div>
+  <div class="form-row full"><div class="form-group"><label>Phân tích</label><textarea class="admin-textarea" id="et-analysis">${tip.analysis||''}</textarea></div></div>
+  <button class="btn-admin gold" onclick="saveEditTip(${id})" style="margin-top:8px">💾 Lưu Thay Đổi</button>`;
+  openModal('edit-tip');
+}
+
+function saveEditTip(id){
+  const tip=allTips.find(t=>t.id===id);if(!tip)return;
+  tip.h=document.getElementById('et-home').value.trim();
+  tip.a=document.getElementById('et-away').value.trim();
+  tip.time=document.getElementById('et-time').value.trim();
+  tip.date=document.getElementById('et-date').value.trim();
+  tip.lk=document.getElementById('et-league').value;
+  tip.lg=lgN[tip.lk];
+  tip.tip=document.getElementById('et-tip').value.trim();
+  tip.odds=parseFloat(document.getElementById('et-odds').value);
+  tip.conf=parseInt(document.getElementById('et-conf').value);
+  tip.ty=document.getElementById('et-type').value;
+  tip.sc=document.getElementById('et-score').value.trim();
+  tip.analysis=document.getElementById('et-analysis').value.trim();
+  saveData();closeModal('edit-tip');renderAll();showNotif('✅ Đã cập nhật tip!');
+}
+
+function savePricing(){
+  pricing.forEach(p=>{
+    p.amount=document.getElementById('price-'+p.id).value;
+    p.save=document.getElementById('save-'+p.id).value;
+    p.saveEn=document.getElementById('saveen-'+p.id).value;
+    p.popular=document.getElementById('pop-'+p.id).checked;
+  });
+  saveData();renderAll();showNotif('✅ Đã lưu bảng giá!');
+}
+
+function saveAdminCreds(){
+  const nu=document.getElementById('new-user').value.trim();
+  const np=document.getElementById('new-pass').value;
+  if(!nu){showNotif('❌ Tên đăng nhập không được trống!');return;}
+  localStorage.setItem('tk_admin_user',nu);
+  if(np.length>=4){localStorage.setItem('tk_admin_pass',np);showNotif('✅ Đã lưu tên đăng nhập & mật khẩu mới!');}
+  else if(np.length===0){showNotif('✅ Đã lưu tên đăng nhập! (Mật khẩu giữ nguyên)');}
+  else{showNotif('❌ Mật khẩu tối thiểu 4 ký tự!');}
+}
+
+function resetData(){
+  if(!confirm('XÓA TOÀN BỘ DATA và khôi phục mặc định?'))return;
+  localStorage.removeItem('tk_tips');localStorage.removeItem('tk_pricing');localStorage.removeItem('tk_admin_user');localStorage.removeItem('tk_admin_pass');
+  allTips=[...defaultTips];pricing=[...defaultPricing];nextId=Math.max(...allTips.map(t=>t.id))+1;
+  renderAll();showNotif('🔄 Đã reset data! (Username: admin / Pass: tipking2026)');
+}
+
+// ===== NAV & UTILS =====
+function showPage(p){
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('page-'+p);if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active',a.getAttribute('data-page')===p));
+}
+function openModal(t){document.getElementById('modal-'+t).classList.add('show');document.body.style.overflow='hidden';}
+function closeModal(t){document.getElementById('modal-'+t).classList.remove('show');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('show');document.body.style.overflow='';}});});
+function selectDeposit(m,el){document.querySelectorAll('.deposit-card').forEach(c=>c.classList.remove('selected'));document.querySelectorAll('.deposit-info').forEach(i=>i.classList.remove('show'));el.classList.add('selected');const info=document.getElementById('dep-'+m);if(info)info.classList.add('show');}
+function copyText(tx){navigator.clipboard.writeText(tx).then(()=>showNotif(t('copied')+tx));}
+function showNotif(tx){const n=document.getElementById('notification');document.getElementById('notif-text').textContent=tx;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),3000);}
+
+renderAll();
+</script>
+</body>
+</html>
